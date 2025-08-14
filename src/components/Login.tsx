@@ -4,6 +4,7 @@ import { Form, Button, Container, Alert, Toast } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import VIcon from "../assets/V.svg";
 import logincss from "../styles/Login.module.css";
+import { login } from '../api-client/authApi';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -24,26 +25,13 @@ const Login: React.FC = () => {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:8080/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || "Login failed");
-      }
-
-      const token = await response.text();
-      localStorage.setItem("authToken", token);
-
-      // Show toast, then redirect after 2 seconds
+      const response = await login({ email, password });
+      // If your API returns a token, store it:
+      localStorage.setItem("authToken", response);
       setShowToast(true);
       setTimeout(() => {
         navigate("/home");
       }, 2000);
-
     } catch (err: any) {
       setError(err.message || "Unknown error");
     }

@@ -1,0 +1,12 @@
+.openapi-generator-ignore
+apis/AuthControllerApi.ts
+apis/HomeControllerApi.ts
+apis/UserInfoControllerApi.ts
+apis/index.ts
+index.ts
+models/LoginRequest.ts
+models/RegisterRequest.ts
+models/RegisterResponseDTO.ts
+models/UserResponseDTO.ts
+models/index.ts
+runtime.ts

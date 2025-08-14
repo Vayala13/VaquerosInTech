@@ -3,15 +3,22 @@ import { useParams } from "react-router-dom";
 import { Form, Button, Container, Alert } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "../styles/Login.module.css";
+import { getUserById, updateUser } from '../api-client/userInfoApi';
 
 const Profile: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const [userInfo, setUserInfo] = useState({
-    name: "",
-    email: "",
-    major: "",
-    graduationDate: "",
-    role: "",
+  const [userInfo, setUserInfo] = useState<{
+    name: string | undefined;
+    email: string | undefined;
+    major: string | undefined;
+    graduationDate: string | undefined;
+    role: string | undefined;
+  }>({
+    name: undefined,
+    email: undefined,
+    major: undefined,
+    graduationDate: undefined,
+    role: undefined,
   });
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -19,17 +26,18 @@ const Profile: React.FC = () => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const response = await fetch(`/api/auth/userinfo/${id}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch user information");
-        }
-        const data = await response.json();
-        setUserInfo(data);
+        const data = await getUserById(Number(id));
+        setUserInfo({
+          name: data.name,
+          email: data.email,
+          major: data.major,
+          graduationDate: data.graduationDate ? (typeof data.graduationDate === 'string' ? data.graduationDate : data.graduationDate.toString().substring(0,10)) : undefined,
+          role: data.role,
+        });
       } catch (err: any) {
         setError(err.message);
       }
     };
-
     fetchUserInfo();
   }, [id]);
 
@@ -49,16 +57,7 @@ const Profile: React.FC = () => {
     setSuccess(false);
 
     try {
-      const response = await fetch(`/api/auth/userinfo/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(userInfo),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update user information");
-      }
-
+      await updateUser(Number(id), userInfo);
       setSuccess(true);
     } catch (err: any) {
       setError(err.message);
@@ -90,7 +89,7 @@ const Profile: React.FC = () => {
             <Form.Label>Name</Form.Label>
             <Form.Control
               type="text"
-              value={userInfo.name}
+              value={userInfo.name ?? ""}
               onChange={(e) => setUserInfo({ ...userInfo, name: e.target.value })}
               required
             />
@@ -100,7 +99,7 @@ const Profile: React.FC = () => {
             <Form.Label>Email</Form.Label>
             <Form.Control
               type="email"
-              value={userInfo.email}
+              value={userInfo.email ?? ""}
               onChange={(e) => setUserInfo({ ...userInfo, email: e.target.value })}
               required
             />
@@ -110,7 +109,7 @@ const Profile: React.FC = () => {
             <Form.Label>Major</Form.Label>
             <Form.Control
               type="text"
-              value={userInfo.major}
+              value={userInfo.major ?? ""}
               onChange={(e) => setUserInfo({ ...userInfo, major: e.target.value })}
             />
           </Form.Group>
@@ -119,7 +118,7 @@ const Profile: React.FC = () => {
             <Form.Label>Graduation Date</Form.Label>
             <Form.Control
               type="date"
-              value={userInfo.graduationDate}
+              value={userInfo.graduationDate ?? ""}
               onChange={(e) => setUserInfo({ ...userInfo, graduationDate: e.target.value })}
             />
           </Form.Group>

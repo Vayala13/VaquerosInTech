@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Form, Button, Container, Alert, Toast } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import VIcon from "../assets/V.svg";
-import { registerUser } from "../auth/api/auth";
+import { register } from '../api-client/authApi';
 import logincss from "../styles/Login.module.css";
 
 const Register: React.FC = () => {
@@ -16,7 +16,6 @@ const Register: React.FC = () => {
   const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
-    document.body.classList.add(logincss["no-scroll"]);
     return () => {
       document.body.classList.remove(logincss["no-scroll"]);
     };
@@ -27,13 +26,8 @@ const Register: React.FC = () => {
     setError(null);
 
     try {
-      await registerUser(email, password, name, major, graduationDate, role);
-
-      // Optionally store extra user info for later use
-      
-
+      await register({ email, password, name, major, graduationDate, role });
       setShowToast(true);
-      // Redirect after 3 seconds
       setTimeout(() => {
         window.location.href = "/login";
       }, 3000);

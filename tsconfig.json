@@ -21,5 +21,6 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],
+  "exclude": ["src/api/generated"],   // 👈 ignore generated code
   "references": [{ "path": "./tsconfig.node.json" }]
 }

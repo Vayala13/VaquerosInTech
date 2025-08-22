@@ -1,5 +1,24 @@
 # VaquerosInTech 
 
+## Prerequisites
+- Node 18+ (or 16.13+)
+- Enable Corepack (one time): `corepack enable`
+
+## Package Manager
+This repo uses **pnpm**. It’s pinned via `package.json`:
+
+```json
+{
+  "packageManager": "pnpm@10.15.0"
+}
+
+```
+## Setup
+```bash
+pnpm install
+pnpm dev
+
+
 A social networking platform designed to connect and empower computer science students at UTRGV, fostering community, mentorship, and collaboration within our vibrant Hispanic tech community.
 
 ##  About
